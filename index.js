@@ -19,6 +19,22 @@ async function run() {
 
     const res = await github.apps.createInstallationToken({installation_id: '220321'});
     github.authenticate({type: 'token', token: res.data.token});
+
+    await github.checks.create({
+        owner: 'jfirebaugh',
+        repo: 'github-app',
+        name: 'test-check',
+        head_branch: process.env['CIRCLE_BRANCH'],
+        head_sha: process.env['CIRCLE_SHA1'],
+        status: 'completed',
+        conclusion: 'success',
+        completed_at: new Date().toISOString(),
+        output: {
+            title: 'This is the output title',
+            summary: 'Congratulations @jfirebaugh, your check completed successfully',
+            text: 'This is more text. It also supports markdown.\n* A\n* B\n* C'
+        }
+    });
 }
 
 run();
